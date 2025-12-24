@@ -1,0 +1,119 @@
+/* =========================
+   Modern note style (soft green)
+   + Desktop drawer (default closed)
+   + Push content when open
+   + Centered content WITH right TOC
+   ========================= */
+
+/* --- Typography & layout --- */
+.md-typeset {
+  line-height: 1.78;
+  font-size: 0.98rem;
+}
+.md-grid {
+  max-width: 1280px;
+}
+
+/* Subtle “note-card” feel */
+.md-typeset .admonition,
+.md-typeset details {
+  border-radius: 16px;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.07);
+}
+.md-typeset pre > code {
+  border-radius: 16px;
+}
+
+/* Heading style (clean + mint accent) */
+.md-typeset h2 {
+  border-left: 6px solid rgba(130, 220, 190, 0.55);
+  padding-left: 0.65rem;
+  border-radius: 8px;
+}
+
+/* =========================
+   Big topic highlight (연노랑)
+   ========================= */
+.md-nav__item--active > .md-nav__link {
+  background: rgba(255, 244, 170, 0.92);
+  border-radius: 12px;
+  padding: 0.38em 0.65em;
+}
+.md-nav__link:hover {
+  background: rgba(255, 244, 170, 0.45);
+  border-radius: 12px;
+}
+.md-nav__link {
+  border-radius: 12px;
+}
+
+/* =========================
+   Desktop behavior:
+   - Sidebar: toggle drawer, default closed
+   - When opened: push header + main to the right (NO overlay)
+   - Keep content centered + right TOC visible
+   ========================= */
+@media (min-width: 76.25em) {
+
+  :root {
+    --drawer-width: 18rem;   /* 사이드바 폭 */
+    --toc-width: 16rem;      /* 우측 TOC 폭 */
+    --content-width: 58rem;  /* 본문 폭 */
+  }
+
+  /* 데스크톱에서도 햄버거 버튼 표시 */
+  .md-header__button.md-icon[for="__drawer"] {
+    display: inline-flex !important;
+  }
+
+  /* push 방식/오버레이는 사용 안 함 */
+  .md-overlay { display: none !important; }
+
+  /* ✅ 핵심: 본문 영역을 항상 drawer 폭만큼 띄워두기 (토글과 무관) */
+  .md-main {
+    padding-left: var(--drawer-width);
+  }
+
+  /* (선택) 상단 헤더도 본문과 같은 라인으로 맞추고 싶으면 켜기 */
+  /* .md-header { padding-left: var(--drawer-width); } */
+
+.md-sidebar--primary {
+  position: fixed;
+  top: var(--md-header-height);
+  left: 0;
+  height: calc(100% - var(--md-header-height));
+  width: var(--drawer-width);
+  max-width: 85vw;
+  transform: translateX(0);           /* ✅ 기본 열림 */
+  transition: transform 180ms ease;
+  z-index: 60;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.18);
+  border-right: 1px solid rgba(0,0,0,0.06);
+  background: var(--md-default-bg-color);
+  overflow: auto;
+}
+
+/* 토글 OFF일 때만 닫기 */
+#__drawer:not(:checked) ~ .md-container .md-sidebar--primary {
+  transform: translateX(-110%);
+}
+
+#__drawer:checked ~ .md-container .md-sidebar--primary {
+  transform: translateX(0);
+}
+
+
+  /* ✅ 중앙 본문 + 우측 TOC 유지 (본문이 왼쪽에 붙지 않게) */
+  .md-main__inner {
+    grid-template-columns: minmax(0, var(--content-width)) var(--toc-width) !important;
+    justify-content: center;
+    column-gap: 1.5rem;
+    margin-left: 0 !important;
+  }
+
+  .md-content { grid-column: 1 !important; }
+  .md-sidebar--secondary { grid-column: 2 !important; display: block !important; }
+
+  .md-content__inner { padding: 0 1.25rem; }
+  .md-sidebar--secondary .md-nav { padding-left: 0.6rem; }
+}
